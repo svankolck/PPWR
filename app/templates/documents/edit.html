@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Edit Document - PPWR{% endblock %}
+{% block content %}
+<h3>Edit Document</h3>
+<div class="card mt-3">
+    <div class="card-body">
+        <form method="POST">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Title *</label>
+                    <input type="text" name="title" class="form-control" value="{{ doc.title }}" required>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Document Type *</label>
+                    <select name="document_type" class="form-select" required>
+                        {% for t in document_types %}<option value="{{ t }}" {% if doc.document_type == t %}selected{% endif %}>{{ t | replace('_',' ') | title }}</option>{% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Status</label>
+                    <select name="status" class="form-select">
+                        {% for s in document_statuses %}<option value="{{ s }}" {% if doc.status == s %}selected{% endif %}>{{ s | title }}</option>{% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Packaging Item</label>
+                    <select name="packaging_id" class="form-select">
+                        <option value="">-- None --</option>
+                        {% for p in packaging_items %}<option value="{{ p.id }}" {% if doc.packaging_id == p.id %}selected{% endif %}>{{ p.code }} - {{ p.name }}</option>{% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Supplier</label>
+                    <select name="supplier_id" class="form-select">
+                        <option value="">-- None --</option>
+                        {% for s in suppliers %}<option value="{{ s.id }}" {% if doc.supplier_id == s.id %}selected{% endif %}>{{ s.name }}</option>{% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Component</label>
+                    <select name="component_id" class="form-select">
+                        <option value="">-- None --</option>
+                        {% for c in components %}<option value="{{ c.id }}" {% if doc.component_id == c.id %}selected{% endif %}>{{ c.name }}</option>{% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Version</label>
+                    <input type="text" name="version" class="form-control" value="{{ doc.version or '' }}">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Valid From</label>
+                    <input type="date" name="valid_from" class="form-control" value="{{ doc.valid_from.isoformat() if doc.valid_from else '' }}">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Valid To</label>
+                    <input type="date" name="valid_to" class="form-control" value="{{ doc.valid_to.isoformat() if doc.valid_to else '' }}">
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Notes</label>
+                <textarea name="notes" class="form-control" rows="2">{{ doc.notes or '' }}</textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Update</button>
+            <a href="{{ url_for('documents.list_documents') }}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

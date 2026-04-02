@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}{{ req.code }} - PPWR{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3>{{ req.code }} - {{ req.name }}</h3>
+    <a href="{{ url_for('requirements.edit', id=req.id) }}" class="btn btn-sm btn-outline-primary">Edit</a>
+</div>
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <p><strong>Category:</strong> {{ req.category | replace('_',' ') | title }}</p>
+                <p><strong>Status:</strong> <span class="badge {% if req.status == 'active' %}bg-success{% else %}bg-secondary{% endif %}">{{ req.status }}</span></p>
+                <p><strong>Severity:</strong> <span class="severity-{{ req.severity_default }}">{{ req.severity_default }}</span></p>
+                <p><strong>Food Contact Relevant:</strong> {{ 'Yes' if req.food_contact_relevant else 'No' }}</p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>Applies to Types:</strong> {{ req.get_packaging_types() | join(', ') or 'All' }}</p>
+                <p><strong>Applies to Materials:</strong> {{ req.get_materials() | join(', ') or 'All' }}</p>
+                <p><strong>Required Fields:</strong> {{ req.get_required_fields() | join(', ') or 'None' }}</p>
+                <p><strong>Required Documents:</strong> {{ req.get_required_document_types() | map('replace', '_', ' ') | map('title') | join(', ') or 'None' }}</p>
+            </div>
+        </div>
+        {% if req.description %}
+        <hr>
+        <p>{{ req.description }}</p>
+        {% endif %}
+        {% if req.notes %}
+        <p class="text-muted"><small>{{ req.notes }}</small></p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

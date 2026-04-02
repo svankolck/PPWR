@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Upload Document - PPWR{% endblock %}
+{% block content %}
+<h3>Upload Document</h3>
+<div class="card mt-3">
+    <div class="card-body">
+        <form method="POST" enctype="multipart/form-data">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Title *</label>
+                    <input type="text" name="title" class="form-control" required>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Document Type *</label>
+                    <select name="document_type" class="form-select" required>
+                        {% for t in document_types %}<option value="{{ t }}">{{ t | replace('_',' ') | title }}</option>{% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Status</label>
+                    <select name="status" class="form-select">
+                        {% for s in document_statuses %}<option value="{{ s }}">{{ s | title }}</option>{% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Packaging Item</label>
+                    <select name="packaging_id" class="form-select">
+                        <option value="">-- None --</option>
+                        {% for p in packaging_items %}<option value="{{ p.id }}">{{ p.code }} - {{ p.name }}</option>{% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Supplier</label>
+                    <select name="supplier_id" class="form-select">
+                        <option value="">-- None --</option>
+                        {% for s in suppliers %}<option value="{{ s.id }}">{{ s.name }}</option>{% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Component</label>
+                    <select name="component_id" class="form-select">
+                        <option value="">-- None --</option>
+                        {% for c in components %}<option value="{{ c.id }}">{{ c.name }}</option>{% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Version</label>
+                    <input type="text" name="version" class="form-control" placeholder="e.g. 1.0">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Valid From</label>
+                    <input type="date" name="valid_from" class="form-control">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Valid To</label>
+                    <input type="date" name="valid_to" class="form-control">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">File</label>
+                    <input type="file" name="file" class="form-control">
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Notes</label>
+                <textarea name="notes" class="form-control" rows="2"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Upload</button>
+            <a href="{{ url_for('documents.list_documents') }}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

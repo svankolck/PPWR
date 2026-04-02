@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Documents - PPWR{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3>Documents</h3>
+    <a href="{{ url_for('documents.upload') }}" class="btn btn-primary btn-sm">+ Upload Document</a>
+</div>
+<div class="card mb-3">
+    <div class="card-body py-2">
+        <form method="GET" class="row g-2">
+            <div class="col-md-3">
+                <input type="text" name="search" class="form-control form-control-sm" placeholder="Search..." value="{{ search }}">
+            </div>
+            <div class="col-md-2">
+                <select name="type" class="form-select form-select-sm">
+                    <option value="">All types</option>
+                    {% for t in document_types %}<option value="{{ t }}" {% if current_type == t %}selected{% endif %}>{{ t | replace('_',' ') | title }}</option>{% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select name="status" class="form-select form-select-sm">
+                    <option value="">All statuses</option>
+                    {% for s in document_statuses %}<option value="{{ s }}" {% if current_status == s %}selected{% endif %}>{{ s | title }}</option>{% endfor %}
+                </select>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-outline-secondary btn-sm">Filter</button>
+                <a href="{{ url_for('documents.list_documents') }}" class="btn btn-outline-secondary btn-sm">Clear</a>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead class="table-light"><tr><th>Title</th><th>Type</th><th>Status</th><th>Packaging</th><th>Supplier</th><th>Valid To</th><th></th></tr></thead>
+            <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ item.title }}</td>
+                <td>{{ item.document_type | replace('_',' ') | title }}</td>
+                <td>
+                    {% if item.status == 'approved' %}<span class="badge bg-success">Approved</span>
+                    {% elif item.status == 'expired' %}<span class="badge bg-danger">Expired</span>
+                    {% elif item.status == 'received' %}<span class="badge bg-info">Received</span>
+                    {% else %}<span class="badge bg-secondary">{{ item.status | title }}</span>{% endif %}
+                </td>
+                <td>{% if item.packaging %}<a href="{{ url_for('packaging.detail', id=item.packaging_id) }}">{{ item.packaging.name }}</a>{% else %}-{% endif %}</td>
+                <td>{% if item.supplier %}<a href="{{ url_for('suppliers.detail', id=item.supplier_id) }}">{{ item.supplier.name }}</a>{% else %}-{% endif %}</td>
+                <td>{{ item.valid_to or '-' }}</td>
+                <td>
+                    <a href="{{ url_for('documents.edit', id=item.id) }}" class="btn btn-sm btn-outline-secondary">Edit</a>
+                    {% if item.file_path %}<a href="{{ url_for('documents.download', filename=item.file_path) }}" class="btn btn-sm btn-outline-primary">Download</a>{% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+            {% if not items %}<tr><td colspan="7" class="text-muted text-center py-3">No documents found.</td></tr>{% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

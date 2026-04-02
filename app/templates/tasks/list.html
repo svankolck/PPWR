@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Tasks - PPWR{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3>Tasks</h3>
+    <a href="{{ url_for('tasks.create') }}" class="btn btn-primary btn-sm">+ New Task</a>
+</div>
+<div class="card mb-3">
+    <div class="card-body py-2">
+        <form method="GET" class="row g-2">
+            <div class="col-md-2">
+                <select name="status" class="form-select form-select-sm">
+                    <option value="">All statuses</option>
+                    {% for s in statuses %}<option value="{{ s }}" {% if current_status == s %}selected{% endif %}>{{ s | replace('_',' ') | title }}</option>{% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select name="priority" class="form-select form-select-sm">
+                    <option value="">All priorities</option>
+                    {% for p in priorities %}<option value="{{ p }}" {% if current_priority == p %}selected{% endif %}>{{ p | title }}</option>{% endfor %}
+                </select>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-outline-secondary btn-sm">Filter</button>
+                <a href="{{ url_for('tasks.list_tasks') }}" class="btn btn-outline-secondary btn-sm">Clear</a>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead class="table-light"><tr><th>Title</th><th>Assigned To</th><th>Priority</th><th>Due Date</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ item.title }}</td>
+                <td>{{ item.assigned_to or '-' }}</td>
+                <td>{{ item.priority }}</td>
+                <td>{{ item.due_date or '-' }}</td>
+                <td><span class="badge {% if item.status == 'done' %}bg-success{% elif item.status == 'in_progress' %}bg-primary{% elif item.status == 'cancelled' %}bg-secondary{% else %}bg-warning text-dark{% endif %}">{{ item.status | replace('_',' ') | title }}</span></td>
+                <td><a href="{{ url_for('tasks.edit', id=item.id) }}" class="btn btn-sm btn-outline-secondary">Edit</a></td>
+            </tr>
+            {% endfor %}
+            {% if not items %}<tr><td colspan="6" class="text-muted text-center py-3">No tasks found.</td></tr>{% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

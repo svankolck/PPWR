@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Packaging Register - PPWR{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3>Packaging Register</h3>
+    <a href="{{ url_for('packaging.create') }}" class="btn btn-primary btn-sm">+ New Packaging</a>
+</div>
+
+<div class="card mb-3">
+    <div class="card-body py-2">
+        <form method="GET" class="row g-2 align-items-end">
+            <div class="col-md-3">
+                <input type="text" name="search" class="form-control form-control-sm" placeholder="Search..." value="{{ search }}">
+            </div>
+            <div class="col-md-2">
+                <select name="status" class="form-select form-select-sm">
+                    <option value="">All statuses</option>
+                    {% for s in statuses %}<option value="{{ s }}" {% if current_status == s %}selected{% endif %}>{{ s | replace('_',' ') | title }}</option>{% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select name="type" class="form-select form-select-sm">
+                    <option value="">All types</option>
+                    {% for t in packaging_types %}<option value="{{ t }}" {% if current_type == t %}selected{% endif %}>{{ t | replace('-',' ') | title }}</option>{% endfor %}
+                </select>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-outline-secondary btn-sm">Filter</button>
+                <a href="{{ url_for('packaging.list_packaging') }}" class="btn btn-outline-secondary btn-sm">Clear</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr><th>Code</th><th>Name</th><th>Type</th><th>Market</th><th>Owner</th><th>Status</th><th></th></tr>
+            </thead>
+            <tbody>
+            {% for item in items %}
+            <tr>
+                <td><a href="{{ url_for('packaging.detail', id=item.id) }}">{{ item.code }}</a></td>
+                <td>{{ item.name }}</td>
+                <td>{{ item.packaging_type | replace('-',' ') | title }}</td>
+                <td>{{ item.market or '-' }}</td>
+                <td>{{ item.owner_name or '-' }}</td>
+                <td>
+                    {% if item.status == 'at_risk' %}<span class="badge bg-danger">At Risk</span>
+                    {% elif item.status == 'approved' %}<span class="badge bg-success">Approved</span>
+                    {% elif item.status == 'missing_evidence' %}<span class="badge bg-warning text-dark">Missing Evidence</span>
+                    {% elif item.status == 'archived' %}<span class="badge bg-secondary">Archived</span>
+                    {% elif item.status == 'in_review' %}<span class="badge bg-info">In Review</span>
+                    {% else %}<span class="badge bg-light text-dark">{{ item.status | replace('_',' ') | title }}</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{{ url_for('packaging.detail', id=item.id) }}" class="btn btn-sm btn-outline-primary">View</a>
+                </td>
+            </tr>
+            {% endfor %}
+            {% if not items %}<tr><td colspan="7" class="text-muted text-center py-3">No packaging items found.</td></tr>{% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit' if req else 'New' }} Requirement - PPWR{% endblock %}
+{% block content %}
+<h3>{{ 'Edit' if req else 'New' }} Requirement</h3>
+<div class="card mt-3">
+    <div class="card-body">
+        <form method="POST">
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Code *</label>
+                    <input type="text" name="code" class="form-control" value="{{ req.code if req else '' }}" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Name *</label>
+                    <input type="text" name="name" class="form-control" value="{{ req.name if req else '' }}" required>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Category *</label>
+                    <select name="category" class="form-select" required>
+                        {% for c in categories %}<option value="{{ c }}" {% if req and req.category == c %}selected{% endif %}>{{ c | replace('_',' ') | title }}</option>{% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Description</label>
+                <textarea name="description" class="form-control" rows="3">{{ req.description if req else '' }}</textarea>
+            </div>
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Status</label>
+                    <select name="status" class="form-select">
+                        {% for s in statuses %}<option value="{{ s }}" {% if req and req.status == s %}selected{% endif %}>{{ s | replace('_',' ') | title }}</option>{% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Default Severity</label>
+                    <select name="severity_default" class="form-select">
+                        {% for s in ['low','medium','high','critical'] %}<option value="{{ s }}" {% if req and req.severity_default == s %}selected{% endif %}>{{ s | title }}</option>{% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Food Contact Relevant</label>
+                    <div class="form-check mt-2">
+                        <input type="checkbox" name="food_contact_relevant" class="form-check-input" {% if req and req.food_contact_relevant %}checked{% endif %}>
+                        <label class="form-check-label">Yes</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Applies to Packaging Types</label>
+                    <div>
+                    {% for t in packaging_types %}
+                    <div class="form-check form-check-inline">
+                        <input type="checkbox" name="applies_to_packaging_types" value="{{ t }}" class="form-check-input" {% if req and t in req.get_packaging_types() %}checked{% endif %}>
+                        <label class="form-check-label">{{ t | replace('-',' ') | title }}</label>
+                    </div>
+                    {% endfor %}
+                    </div>
+                    <small class="text-muted">Leave empty = applies to all</small>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Applies to Materials (comma-separated)</label>
+                    <input type="text" name="applies_to_materials" class="form-control" value="{{ req.get_materials() | join(', ') if req else '' }}" placeholder="e.g. plastic, PET, HDPE">
+                    <small class="text-muted">Leave empty = applies to all</small>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Required Data Fields (comma-separated)</label>
+                    <input type="text" name="required_fields" class="form-control" value="{{ req.get_required_fields() | join(', ') if req else '' }}" placeholder="e.g. recycled_content_pct, weight_grams">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Required Document Types</label>
+                    <div>
+                    {% for dt in ['specification_sheet','material_declaration','food_contact_declaration','recycled_content_statement','certificate','test_report','substance_statement','supplier_declaration'] %}
+                    <div class="form-check form-check-inline">
+                        <input type="checkbox" name="required_document_types" value="{{ dt }}" class="form-check-input" {% if req and dt in req.get_required_document_types() %}checked{% endif %}>
+                        <label class="form-check-label small">{{ dt | replace('_',' ') | title }}</label>
+                    </div>
+                    {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Notes</label>
+                <textarea name="notes" class="form-control" rows="2">{{ req.notes if req else '' }}</textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">{{ 'Update' if req else 'Create' }}</button>
+            <a href="{{ url_for('requirements.list_requirements') }}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

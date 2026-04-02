@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+{% block title %}Dossier: {{ pkg.name }} - PPWR{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3>Packaging Dossier: {{ pkg.code }} - {{ pkg.name }}</h3>
+    <div>
+        <a href="{{ url_for('dossier.export_html', packaging_id=pkg.id) }}" class="btn btn-sm btn-outline-dark">Export HTML</a>
+        <a href="{{ url_for('packaging.detail', id=pkg.id) }}" class="btn btn-sm btn-outline-secondary">Back to Detail</a>
+    </div>
+</div>
+
+<!-- Summary -->
+<div class="card mb-3">
+    <div class="card-header"><strong>General Information</strong></div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-3"><strong>Code:</strong> {{ pkg.code }}</div>
+            <div class="col-md-3"><strong>Type:</strong> {{ pkg.packaging_type | replace('-',' ') | title }}</div>
+            <div class="col-md-3"><strong>Market:</strong> {{ pkg.market or '-' }}</div>
+            <div class="col-md-3"><strong>Status:</strong>
+                {% if pkg.status == 'at_risk' %}<span class="badge bg-danger">At Risk</span>
+                {% elif pkg.status == 'approved' %}<span class="badge bg-success">Approved</span>
+                {% elif pkg.status == 'missing_evidence' %}<span class="badge bg-warning text-dark">Missing Evidence</span>
+                {% else %}<span class="badge bg-secondary">{{ pkg.status | replace('_',' ') | title }}</span>{% endif %}
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-md-3"><strong>Owner:</strong> {{ pkg.owner_name or '-' }}</div>
+            <div class="col-md-3"><strong>SKU/Product Family:</strong> {{ pkg.sku_or_product_family or '-' }}</div>
+        </div>
+        {% if pkg.notes %}<div class="mt-2"><strong>Notes:</strong> {{ pkg.notes }}</div>{% endif %}
+    </div>
+</div>
+
+<!-- Components -->
+<div class="card mb-3">
+    <div class="card-header"><strong>Components ({{ components|length }})</strong></div>
+    <div class="card-body p-0">
+        <table class="table table-sm mb-0">
+            <thead><tr><th>Name</th><th>Material</th><th>Weight (g)</th><th>Recycled %</th><th>Food Contact</th><th>Supplier</th></tr></thead>
+            <tbody>
+            {% for c in components %}
+            <tr>
+                <td>{{ c.name }}</td>
+                <td>{{ c.material or '-' }}</td>
+                <td>{{ c.weight_grams if c.weight_grams is not none else '-' }}</td>
+                <td>{{ c.recycled_content_pct if c.recycled_content_pct is not none else '-' }}{% if c.recycled_content_pct is not none %}%{% endif %}</td>
+                <td>{{ 'Yes' if c.food_contact else 'No' }}</td>
+                <td>{{ c.supplier.name if c.supplier else '-' }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Suppliers -->
+<div class="card mb-3">
+    <div class="card-header"><strong>Suppliers ({{ suppliers|length }})</strong></div>
+    <div class="card-body p-0">
+        <table class="table table-sm mb-0">
+            <thead><tr><th>Name</th><th>Code</th><th>Country</th><th>Status</th></tr></thead>
+            <tbody>
+            {% for s in suppliers %}
+            <tr><td>{{ s.name }}</td><td>{{ s.supplier_code }}</td><td>{{ s.country or '-' }}</td><td>{{ s.status }}</td></tr>
+            {% endfor %}
+            {% if not suppliers %}<tr><td colspan="4" class="text-muted">No suppliers</td></tr>{% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Documents -->
+<div class="card mb-3">
+    <div class="card-header"><strong>Documents ({{ documents|length }})</strong></div>
+    <div class="card-body p-0">
+        <table class="table table-sm mb-0">
+            <thead><tr><th>Title</th><th>Type</th><th>Status</th><th>Valid To</th></tr></thead>
+            <tbody>
+            {% for d in documents %}
+            <tr><td>{{ d.title }}</td><td>{{ d.document_type | replace('_',' ') | title }}</td><td>{{ d.status }}</td><td>{{ d.valid_to or '-' }}</td></tr>
+            {% endfor %}
+            {% if not documents %}<tr><td colspan="4" class="text-muted">No documents</td></tr>{% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Assessments -->
+<div class="card mb-3">
+    <div class="card-header"><strong>Requirement Assessments ({{ assessments|length }})</strong></div>
+    <div class="card-body p-0">
+        <table class="table table-sm mb-0">
+            <thead><tr><th>Requirement</th><th>Applicability</th><th>Evidence</th><th>Overall</th></tr></thead>
+            <tbody>
+            {% for a in assessments %}
+            <tr>
+                <td>{{ a.requirement.code }} - {{ a.requirement.name }}</td>
+                <td>{{ a.applicability_status }}</td>
+                <td>
+                    {% if a.evidence_status == 'complete' %}<span class="badge bg-success">Complete</span>
+                    {% elif a.evidence_status == 'partial' %}<span class="badge bg-warning text-dark">Partial</span>
+                    {% else %}<span class="badge bg-danger">Missing</span>{% endif %}
+                </td>
+                <td>{{ a.overall_status }}</td>
+            </tr>
+            {% endfor %}
+            {% if not assessments %}<tr><td colspan="4" class="text-muted">No assessments run yet</td></tr>{% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Gaps -->
+<div class="card mb-3">
+    <div class="card-header"><strong>Open Gaps ({{ gaps|length }})</strong></div>
+    <div class="card-body p-0">
+        <table class="table table-sm mb-0">
+            <thead><tr><th>Title</th><th>Severity</th><th>Status</th><th>Owner</th></tr></thead>
+            <tbody>
+            {% for g in gaps %}
+            <tr>
+                <td>{{ g.title }}</td>
+                <td><span class="severity-{{ g.severity }}">{{ g.severity }}</span></td>
+                <td>{{ g.status }}</td>
+                <td>{{ g.owner or '-' }}</td>
+            </tr>
+            {% endfor %}
+            {% if not gaps %}<tr><td colspan="4" class="text-muted">No gaps</td></tr>{% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Tasks -->
+<div class="card mb-3">
+    <div class="card-header"><strong>Tasks ({{ tasks|length }})</strong></div>
+    <div class="card-body p-0">
+        <table class="table table-sm mb-0">
+            <thead><tr><th>Title</th><th>Assigned To</th><th>Priority</th><th>Status</th></tr></thead>
+            <tbody>
+            {% for t in tasks %}
+            <tr><td>{{ t.title }}</td><td>{{ t.assigned_to or '-' }}</td><td>{{ t.priority }}</td><td>{{ t.status }}</td></tr>
+            {% endfor %}
+            {% if not tasks %}<tr><td colspan="4" class="text-muted">No tasks</td></tr>{% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Audit Log -->
+<div class="card mb-3">
+    <div class="card-header"><strong>Audit History</strong></div>
+    <div class="card-body p-0">
+        <table class="table table-sm mb-0">
+            <thead><tr><th>Timestamp</th><th>Action</th><th>User</th></tr></thead>
+            <tbody>
+            {% for log in audit_logs %}
+            <tr><td>{{ log.timestamp.strftime('%Y-%m-%d %H:%M') }}</td><td>{{ log.action }}</td><td>{{ log.user_name }}</td></tr>
+            {% endfor %}
+            {% if not audit_logs %}<tr><td colspan="3" class="text-muted">No audit history</td></tr>{% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

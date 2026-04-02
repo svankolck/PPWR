@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+{% block title %}{{ pkg.name }} - PPWR{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h3 class="mb-0">{{ pkg.code }} - {{ pkg.name }}</h3>
+        <small class="text-muted">{{ pkg.packaging_type | replace('-',' ') | title }} | {{ pkg.market or 'No market' }} | Owner: {{ pkg.owner_name or 'Unassigned' }}</small>
+    </div>
+    <div>
+        {% if pkg.status == 'at_risk' %}<span class="badge bg-danger fs-6">At Risk</span>
+        {% elif pkg.status == 'approved' %}<span class="badge bg-success fs-6">Approved</span>
+        {% elif pkg.status == 'missing_evidence' %}<span class="badge bg-warning text-dark fs-6">Missing Evidence</span>
+        {% else %}<span class="badge bg-secondary fs-6">{{ pkg.status | replace('_',' ') | title }}</span>
+        {% endif %}
+    </div>
+</div>
+
+<div class="mb-3">
+    <a href="{{ url_for('packaging.edit', id=pkg.id) }}" class="btn btn-sm btn-outline-primary">Edit</a>
+    <form method="POST" action="{{ url_for('packaging.assess', id=pkg.id) }}" class="d-inline">
+        <button class="btn btn-sm btn-outline-info">Run Assessment</button>
+    </form>
+    <form method="POST" action="{{ url_for('packaging.gen_gaps', id=pkg.id) }}" class="d-inline">
+        <button class="btn btn-sm btn-outline-warning">Generate Gaps</button>
+    </form>
+    <a href="{{ url_for('dossier.view', packaging_id=pkg.id) }}" class="btn btn-sm btn-outline-dark">View Dossier</a>
+    <form method="POST" action="{{ url_for('packaging.archive', id=pkg.id) }}" class="d-inline">
+        <button class="btn btn-sm btn-outline-secondary" onclick="return confirm('Archive this item?')">Archive</button>
+    </form>
+</div>
+
+{% if pkg.notes %}<div class="alert alert-light">{{ pkg.notes }}</div>{% endif %}
+
+<!-- Tabs -->
+<ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#components">Components ({{ components|length }})</a></li>
+    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#suppliers">Suppliers ({{ suppliers|length }})</a></li>
+    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#documents">Documents ({{ documents|length }})</a></li>
+    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#assessments">Assessments ({{ assessments|length }})</a></li>
+    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#gaps">Gaps ({{ gaps|length }})</a></li>
+    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tasks">Tasks ({{ tasks|length }})</a></li>
+    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#audit">Audit Log</a></li>
+</ul>
+
+<div class="tab-content border border-top-0 bg-white p-3">
+    <!-- Components -->
+    <div class="tab-pane fade show active" id="components">
+        <a href="{{ url_for('components.create', packaging_id=pkg.id) }}" class="btn btn-sm btn-primary mb-2">+ Add Component</a>
+        <table class="table table-sm">
+            <thead><tr><th>Name</th><th>Material</th><th>Weight (g)</th><th>Recycled %</th><th>Food Contact</th><th>Supplier</th><th></th></tr></thead>
+            <tbody>
+            {% for c in components %}
+            <tr>
+                <td>{{ c.name }}</td>
+                <td>{{ c.material or '-' }}</td>
+                <td>{{ c.weight_grams if c.weight_grams is not none else '-' }}</td>
+                <td>{{ c.recycled_content_pct if c.recycled_content_pct is not none else '-' }}{% if c.recycled_content_pct is not none %}%{% endif %}</td>
+                <td>{% if c.food_contact %}<span class="badge bg-warning text-dark">Yes</span>{% else %}No{% endif %}</td>
+                <td>{{ c.supplier.name if c.supplier else '-' }}</td>
+                <td>
+                    <a href="{{ url_for('components.edit', id=c.id) }}" class="btn btn-sm btn-outline-secondary">Edit</a>
+                    <form method="POST" action="{{ url_for('components.delete', id=c.id) }}" class="d-inline">
+                        <button class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete?')">Del</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+            {% if not components %}<tr><td colspan="7" class="text-muted">No components yet.</td></tr>{% endif %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Suppliers -->
+    <div class="tab-pane fade" id="suppliers">
+        <table class="table table-sm">
+            <thead><tr><th>Name</th><th>Code</th><th>Country</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+            {% for s in suppliers %}
+            <tr>
+                <td><a href="{{ url_for('suppliers.detail', id=s.id) }}">{{ s.name }}</a></td>
+                <td>{{ s.supplier_code }}</td>
+                <td>{{ s.country or '-' }}</td>
+                <td>{{ s.status }}</td>
+                <td><a href="{{ url_for('suppliers.detail', id=s.id) }}" class="btn btn-sm btn-outline-secondary">View</a></td>
+            </tr>
+            {% endfor %}
+            {% if not suppliers %}<tr><td colspan="5" class="text-muted">No suppliers linked via components.</td></tr>{% endif %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Documents -->
+    <div class="tab-pane fade" id="documents">
+        <a href="{{ url_for('documents.upload') }}" class="btn btn-sm btn-primary mb-2">+ Upload Document</a>
+        <table class="table table-sm">
+            <thead><tr><th>Title</th><th>Type</th><th>Status</th><th>Valid To</th><th></th></tr></thead>
+            <tbody>
+            {% for d in documents %}
+            <tr>
+                <td>{{ d.title }}</td>
+                <td>{{ d.document_type | replace('_',' ') | title }}</td>
+                <td>
+                    {% if d.status == 'approved' %}<span class="badge bg-success">Approved</span>
+                    {% elif d.status == 'expired' %}<span class="badge bg-danger">Expired</span>
+                    {% else %}<span class="badge bg-secondary">{{ d.status | title }}</span>{% endif %}
+                </td>
+                <td>{{ d.valid_to or '-' }}</td>
+                <td>
+                    {% if d.file_path %}<a href="{{ url_for('documents.download', filename=d.file_path) }}" class="btn btn-sm btn-outline-secondary">Download</a>{% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+            {% if not documents %}<tr><td colspan="5" class="text-muted">No documents attached.</td></tr>{% endif %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Assessments -->
+    <div class="tab-pane fade" id="assessments">
+        <table class="table table-sm">
+            <thead><tr><th>Requirement</th><th>Applicability</th><th>Evidence</th><th>Overall</th></tr></thead>
+            <tbody>
+            {% for a in assessments %}
+            <tr>
+                <td>{{ a.requirement.code }} - {{ a.requirement.name }}</td>
+                <td>{{ a.applicability_status }}</td>
+                <td>
+                    {% if a.evidence_status == 'complete' %}<span class="badge bg-success">Complete</span>
+                    {% elif a.evidence_status == 'partial' %}<span class="badge bg-warning text-dark">Partial</span>
+                    {% else %}<span class="badge bg-danger">Missing</span>{% endif %}
+                </td>
+                <td>
+                    {% if a.overall_status == 'compliant' %}<span class="badge bg-success">Compliant</span>
+                    {% else %}<span class="badge bg-secondary">{{ a.overall_status | title }}</span>{% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+            {% if not assessments %}<tr><td colspan="4" class="text-muted">No assessments yet. Click "Run Assessment" above.</td></tr>{% endif %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Gaps -->
+    <div class="tab-pane fade" id="gaps">
+        <table class="table table-sm">
+            <thead><tr><th>Title</th><th>Severity</th><th>Status</th><th>Owner</th><th></th></tr></thead>
+            <tbody>
+            {% for g in gaps %}
+            <tr>
+                <td>{{ g.title }}</td>
+                <td><span class="severity-{{ g.severity }}">{{ g.severity }}</span></td>
+                <td>{{ g.status }}</td>
+                <td>{{ g.owner or '-' }}</td>
+                <td><a href="{{ url_for('gaps.edit', id=g.id) }}" class="btn btn-sm btn-outline-secondary">Edit</a></td>
+            </tr>
+            {% endfor %}
+            {% if not gaps %}<tr><td colspan="5" class="text-muted">No gaps. Click "Generate Gaps" above.</td></tr>{% endif %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Tasks -->
+    <div class="tab-pane fade" id="tasks">
+        <table class="table table-sm">
+            <thead><tr><th>Title</th><th>Assigned To</th><th>Priority</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+            {% for t in tasks %}
+            <tr>
+                <td>{{ t.title }}</td>
+                <td>{{ t.assigned_to or '-' }}</td>
+                <td>{{ t.priority }}</td>
+                <td>{{ t.status }}</td>
+                <td><a href="{{ url_for('tasks.edit', id=t.id) }}" class="btn btn-sm btn-outline-secondary">Edit</a></td>
+            </tr>
+            {% endfor %}
+            {% if not tasks %}<tr><td colspan="5" class="text-muted">No tasks.</td></tr>{% endif %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Audit Log -->
+    <div class="tab-pane fade" id="audit">
+        <table class="table table-sm">
+            <thead><tr><th>Timestamp</th><th>Action</th><th>User</th><th>Details</th></tr></thead>
+            <tbody>
+            {% for log in audit_logs %}
+            <tr>
+                <td>{{ log.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+                <td>{{ log.action }}</td>
+                <td>{{ log.user_name }}</td>
+                <td><small>{{ log.details_json or '' }}</small></td>
+            </tr>
+            {% endfor %}
+            {% if not audit_logs %}<tr><td colspan="4" class="text-muted">No audit history.</td></tr>{% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

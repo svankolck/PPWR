@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit' if packaging else 'New' }} Packaging - PPWR{% endblock %}
+{% block content %}
+<h3>{{ 'Edit' if packaging else 'New' }} Packaging Item</h3>
+<div class="card mt-3">
+    <div class="card-body">
+        <form method="POST">
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Code *</label>
+                    <input type="text" name="code" class="form-control" value="{{ packaging.code if packaging else '' }}" required>
+                </div>
+                <div class="col-md-8 mb-3">
+                    <label class="form-label">Name *</label>
+                    <input type="text" name="name" class="form-control" value="{{ packaging.name if packaging else '' }}" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Packaging Type *</label>
+                    <select name="packaging_type" class="form-select" required>
+                        {% for t in packaging_types %}
+                        <option value="{{ t }}" {% if packaging and packaging.packaging_type == t %}selected{% endif %}>{{ t | replace('-',' ') | title }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">SKU / Product Family</label>
+                    <input type="text" name="sku_or_product_family" class="form-control" value="{{ packaging.sku_or_product_family if packaging else '' }}">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Market</label>
+                    <input type="text" name="market" class="form-control" value="{{ packaging.market if packaging else '' }}">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Owner</label>
+                    <input type="text" name="owner_name" class="form-control" value="{{ packaging.owner_name if packaging else '' }}">
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Notes</label>
+                <textarea name="notes" class="form-control" rows="3">{{ packaging.notes if packaging else '' }}</textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">{{ 'Update' if packaging else 'Create' }}</button>
+            <a href="{{ url_for('packaging.list_packaging') }}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

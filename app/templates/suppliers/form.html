@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit' if supplier else 'New' }} Supplier - PPWR{% endblock %}
+{% block content %}
+<h3>{{ 'Edit' if supplier else 'New' }} Supplier</h3>
+<div class="card mt-3">
+    <div class="card-body">
+        <form method="POST">
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Supplier Code *</label>
+                    <input type="text" name="supplier_code" class="form-control" value="{{ supplier.supplier_code if supplier else '' }}" required>
+                </div>
+                <div class="col-md-8 mb-3">
+                    <label class="form-label">Name *</label>
+                    <input type="text" name="name" class="form-control" value="{{ supplier.name if supplier else '' }}" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Country</label>
+                    <input type="text" name="country" class="form-control" value="{{ supplier.country if supplier else '' }}">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" name="email" class="form-control" value="{{ supplier.email if supplier else '' }}">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Phone</label>
+                    <input type="text" name="phone" class="form-control" value="{{ supplier.phone if supplier else '' }}">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Status</label>
+                    <select name="status" class="form-select">
+                        {% for s in statuses %}
+                        <option value="{{ s }}" {% if supplier and supplier.status == s %}selected{% endif %}>{{ s | title }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Notes</label>
+                <textarea name="notes" class="form-control" rows="2">{{ supplier.notes if supplier else '' }}</textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">{{ 'Update' if supplier else 'Create' }}</button>
+            <a href="{{ url_for('suppliers.list_suppliers') }}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - PPWR{% endblock %}
+{% block content %}
+<h3 class="mb-4">Dashboard</h3>
+
+<div class="row mb-4">
+    <div class="col-md-2">
+        <div class="card stat-card blue">
+            <div class="card-body py-2">
+                <div class="text-muted small">Total Packaging</div>
+                <h4 class="mb-0">{{ total_packaging }}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card stat-card red">
+            <div class="card-body py-2">
+                <div class="text-muted small">At Risk</div>
+                <h4 class="mb-0">{{ at_risk }}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card stat-card orange">
+            <div class="card-body py-2">
+                <div class="text-muted small">Missing Evidence</div>
+                <h4 class="mb-0">{{ missing_evidence }}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card stat-card purple">
+            <div class="card-body py-2">
+                <div class="text-muted small">Open Gaps</div>
+                <h4 class="mb-0">{{ open_gaps }}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card stat-card green">
+            <div class="card-body py-2">
+                <div class="text-muted small">Open Tasks</div>
+                <h4 class="mb-0">{{ open_tasks }}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card stat-card orange">
+            <div class="card-body py-2">
+                <div class="text-muted small">Expired Docs</div>
+                <h4 class="mb-0">{{ expired_docs }}</h4>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header"><strong>By Status</strong></div>
+            <div class="card-body p-0">
+                <table class="table table-sm mb-0">
+                    {% for status, count in status_counts.items() %}
+                    <tr>
+                        <td>{{ status | replace('_', ' ') | title }}</td>
+                        <td class="text-end"><span class="badge bg-secondary">{{ count }}</span></td>
+                    </tr>
+                    {% endfor %}
+                    {% if not status_counts %}<tr><td class="text-muted">No data</td></tr>{% endif %}
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header"><strong>By Packaging Type</strong></div>
+            <div class="card-body p-0">
+                <table class="table table-sm mb-0">
+                    {% for ptype, count in type_counts.items() %}
+                    <tr>
+                        <td>{{ ptype | replace('_', ' ') | title }}</td>
+                        <td class="text-end"><span class="badge bg-info">{{ count }}</span></td>
+                    </tr>
+                    {% endfor %}
+                    {% if not type_counts %}<tr><td class="text-muted">No data</td></tr>{% endif %}
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between">
+                <strong>Recent Gaps</strong>
+                <a href="{{ url_for('gaps.list_gaps') }}" class="text-decoration-none small">View all</a>
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-sm mb-0">
+                    <thead><tr><th>Title</th><th>Severity</th><th>Status</th></tr></thead>
+                    <tbody>
+                    {% for gap in recent_gaps %}
+                    <tr>
+                        <td>{{ gap.title | truncate(50) }}</td>
+                        <td><span class="severity-{{ gap.severity }}">{{ gap.severity }}</span></td>
+                        <td>{{ gap.status }}</td>
+                    </tr>
+                    {% endfor %}
+                    {% if not recent_gaps %}<tr><td colspan="3" class="text-muted">No gaps</td></tr>{% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between">
+                <strong>Recent Tasks</strong>
+                <a href="{{ url_for('tasks.list_tasks') }}" class="text-decoration-none small">View all</a>
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-sm mb-0">
+                    <thead><tr><th>Title</th><th>Priority</th><th>Status</th></tr></thead>
+                    <tbody>
+                    {% for task in recent_tasks %}
+                    <tr>
+                        <td>{{ task.title | truncate(50) }}</td>
+                        <td>{{ task.priority }}</td>
+                        <td>{{ task.status }}</td>
+                    </tr>
+                    {% endfor %}
+                    {% if not recent_tasks %}<tr><td colspan="3" class="text-muted">No tasks</td></tr>{% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

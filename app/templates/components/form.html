@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit' if component else 'Add' }} Component - PPWR{% endblock %}
+{% block content %}
+<h3>{{ 'Edit' if component else 'Add' }} Component for {{ pkg.name }}</h3>
+<div class="card mt-3">
+    <div class="card-body">
+        <form method="POST">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Name *</label>
+                    <input type="text" name="name" class="form-control" value="{{ component.name if component else '' }}" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Material</label>
+                    <input type="text" name="material" class="form-control" value="{{ component.material if component else '' }}" placeholder="e.g. PET, cardboard, glass">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Weight (grams)</label>
+                    <input type="number" name="weight_grams" class="form-control" step="0.01" min="0" value="{{ component.weight_grams if component and component.weight_grams is not none else '' }}">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Recycled Content %</label>
+                    <input type="number" name="recycled_content_pct" class="form-control" step="0.1" min="0" max="100" value="{{ component.recycled_content_pct if component and component.recycled_content_pct is not none else '' }}">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Food Contact</label>
+                    <div class="form-check mt-2">
+                        <input type="checkbox" name="food_contact" class="form-check-input" {% if component and component.food_contact %}checked{% endif %}>
+                        <label class="form-check-label">Yes</label>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Supplier</label>
+                    <select name="supplier_id" class="form-select">
+                        <option value="">-- None --</option>
+                        {% for s in suppliers %}
+                        <option value="{{ s.id }}" {% if component and component.supplier_id == s.id %}selected{% endif %}>{{ s.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Notes</label>
+                <textarea name="notes" class="form-control" rows="2">{{ component.notes if component else '' }}</textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">{{ 'Update' if component else 'Add' }}</button>
+            <a href="{{ url_for('packaging.detail', id=pkg.id) }}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

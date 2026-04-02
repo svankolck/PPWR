@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Gaps - PPWR{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3>Gaps</h3>
+    <a href="{{ url_for('gaps.create') }}" class="btn btn-primary btn-sm">+ New Gap</a>
+</div>
+<div class="card mb-3">
+    <div class="card-body py-2">
+        <form method="GET" class="row g-2">
+            <div class="col-md-2">
+                <select name="status" class="form-select form-select-sm">
+                    <option value="">All statuses</option>
+                    {% for s in statuses %}<option value="{{ s }}" {% if current_status == s %}selected{% endif %}>{{ s | replace('_',' ') | title }}</option>{% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select name="severity" class="form-select form-select-sm">
+                    <option value="">All severities</option>
+                    {% for s in severities %}<option value="{{ s }}" {% if current_severity == s %}selected{% endif %}>{{ s | title }}</option>{% endfor %}
+                </select>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-outline-secondary btn-sm">Filter</button>
+                <a href="{{ url_for('gaps.list_gaps') }}" class="btn btn-outline-secondary btn-sm">Clear</a>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead class="table-light"><tr><th>Title</th><th>Packaging</th><th>Severity</th><th>Owner</th><th>Due Date</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ item.title }}</td>
+                <td>{% if item.packaging %}<a href="{{ url_for('packaging.detail', id=item.packaging_id) }}">{{ item.packaging.code }}</a>{% else %}-{% endif %}</td>
+                <td><span class="severity-{{ item.severity }}">{{ item.severity }}</span></td>
+                <td>{{ item.owner or '-' }}</td>
+                <td>{{ item.due_date or '-' }}</td>
+                <td><span class="badge {% if item.status == 'open' %}bg-warning text-dark{% elif item.status == 'resolved' %}bg-success{% else %}bg-secondary{% endif %}">{{ item.status }}</span></td>
+                <td>
+                    <a href="{{ url_for('gaps.edit', id=item.id) }}" class="btn btn-sm btn-outline-secondary">Edit</a>
+                    <form method="POST" action="{{ url_for('gaps.create_task', id=item.id) }}" class="d-inline">
+                        <button class="btn btn-sm btn-outline-primary">Create Task</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+            {% if not items %}<tr><td colspan="7" class="text-muted text-center py-3">No gaps found.</td></tr>{% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
