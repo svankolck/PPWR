@@ -20,13 +20,24 @@ from app.models.audit_log import AuditLog
 from datetime import date, datetime
 
 
+def seed_into_db(db):
+    """Seed demo data into an existing database context."""
+    _do_seed(db)
+    print('Seed data loaded automatically on first run!')
+
+
 def seed():
     app = create_app()
     with app.app_context():
         # Clear existing data
         db.drop_all()
         db.create_all()
+        _do_seed(db)
+        print('Seed data loaded successfully!')
+        print(f'  Users: 2 (admin/admin, analyst/analyst)')
 
+
+def _do_seed(db):
         # --- Users ---
         admin = User(username='admin', email='admin@ppwr.local', full_name='Admin User', role='admin')
         admin.set_password('admin')
@@ -234,15 +245,6 @@ def seed():
         db.session.add_all(audit_entries)
 
         db.session.commit()
-        print('Seed data loaded successfully!')
-        print(f'  Users: 2 (admin/admin, analyst/analyst)')
-        print(f'  Suppliers: {len(suppliers)}')
-        print(f'  Packaging items: {len(packaging_items)}')
-        print(f'  Components: {len(components)}')
-        print(f'  Requirements: {len(requirements)}')
-        print(f'  Documents: {len(documents)}')
-        print(f'  Gaps: {len(gaps)}')
-        print(f'  Tasks: {len(tasks)}')
 
 
 if __name__ == '__main__':

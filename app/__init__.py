@@ -51,12 +51,18 @@ def create_app(config_name=None):
     app.register_blueprint(dossier_bp)
     app.register_blueprint(components_bp)
 
-    # Create tables
+    # Create tables and seed on first run
     with app.app_context():
         from app.models import user, packaging, supplier, document, requirement, gap, task, audit_log
+        from app.models.user import User
         db.create_all()
 
         # Ensure upload directory exists
         os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+
+        # Auto-seed if database is empty (first run)
+        if config_name != 'testing' and User.query.count() == 0:
+            from seeds.seed_data import seed_into_db
+            seed_into_db(db)
 
     return app
