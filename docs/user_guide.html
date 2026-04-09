@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PPWR Compliance Workspace - Gebruikershandleiding</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #2d3748; line-height: 1.7; background: #f7fafc; }
+        .cover { background: linear-gradient(135deg, #1a2332 0%, #2d4059 100%); color: white; padding: 80px 40px; text-align: center; }
+        .cover h1 { font-size: 2.5em; margin-bottom: 10px; }
+        .cover p { font-size: 1.2em; opacity: 0.85; max-width: 700px; margin: 0 auto; }
+        .cover .version { margin-top: 20px; font-size: 0.9em; opacity: 0.6; }
+        .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+        .toc { background: white; border-radius: 8px; padding: 30px 40px; margin-bottom: 40px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .toc h2 { font-size: 1.4em; margin-bottom: 15px; color: #1a2332; }
+        .toc ol { padding-left: 20px; }
+        .toc li { margin-bottom: 8px; }
+        .toc a { color: #2b6cb0; text-decoration: none; }
+        .toc a:hover { text-decoration: underline; }
+        .section { background: white; border-radius: 8px; padding: 35px 40px; margin-bottom: 30px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .section h2 { font-size: 1.5em; color: #1a2332; margin-bottom: 5px; border-bottom: 3px solid #3182ce; padding-bottom: 8px; display: inline-block; }
+        .section h3 { font-size: 1.1em; color: #4a5568; margin-top: 20px; margin-bottom: 8px; }
+        .section p { margin: 10px 0; }
+        .section ul { padding-left: 20px; margin: 10px 0; }
+        .section li { margin-bottom: 5px; }
+        .screenshot { margin: 20px 0; text-align: center; }
+        .screenshot img { max-width: 100%; border: 1px solid #e2e8f0; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .screenshot .caption { font-size: 0.85em; color: #718096; margin-top: 8px; font-style: italic; }
+        .tip { background: #ebf8ff; border-left: 4px solid #3182ce; padding: 12px 16px; border-radius: 0 6px 6px 0; margin: 15px 0; }
+        .tip strong { color: #2b6cb0; }
+        .warning { background: #fffbeb; border-left: 4px solid #d69e2e; padding: 12px 16px; border-radius: 0 6px 6px 0; margin: 15px 0; }
+        .warning strong { color: #b7791f; }
+        .steps { background: #f7fafc; border-radius: 6px; padding: 15px 20px; margin: 15px 0; }
+        .steps ol { padding-left: 20px; }
+        .steps li { margin-bottom: 8px; }
+        .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.8em; font-weight: 600; }
+        .badge-blue { background: #bee3f8; color: #2a4365; }
+        .badge-green { background: #c6f6d5; color: #22543d; }
+        .badge-red { background: #fed7d7; color: #742a2a; }
+        .badge-orange { background: #feebc8; color: #7b341e; }
+        .badge-gray { background: #e2e8f0; color: #4a5568; }
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+        th { background: #f7fafc; font-weight: 600; color: #4a5568; }
+        .footer { text-align: center; padding: 30px; color: #a0aec0; font-size: 0.85em; }
+        @media print { .cover { padding: 40px 20px; } .container { padding: 20px 10px; } .section { box-shadow: none; border: 1px solid #e2e8f0; } }
+    </style>
+</head>
+<body>
+
+<div class="cover">
+    <h1>PPWR Compliance Workspace</h1>
+    <p>Gebruikershandleiding voor het beheren van verpakkingscompliance onder de EU Packaging and Packaging Waste Regulation</p>
+    <div class="version">Versie 1.0 &mdash; April 2026</div>
+</div>
+
+<div class="container">
+
+<!-- Inhoudsopgave -->
+<div class="toc">
+    <h2>Inhoudsopgave</h2>
+    <ol>
+        <li><a href="#inleiding">Inleiding</a></li>
+        <li><a href="#inloggen">Inloggen</a></li>
+        <li><a href="#dashboard">Dashboard</a></li>
+        <li><a href="#packaging">Packaging Register</a></li>
+        <li><a href="#packaging-detail">Packaging Detail</a></li>
+        <li><a href="#suppliers">Leveranciers</a></li>
+        <li><a href="#documents">Documenten</a></li>
+        <li><a href="#requirements">PPWR Requirements</a></li>
+        <li><a href="#gaps">Gaps (Tekortkomingen)</a></li>
+        <li><a href="#tasks">Taken</a></li>
+        <li><a href="#dossier">Packaging Dossier</a></li>
+        <li><a href="#workflow">Standaard Werkwijze</a></li>
+    </ol>
+</div>
+
+<!-- 1. Inleiding -->
+<div class="section" id="inleiding">
+    <h2>1. Inleiding</h2>
+    <p>De PPWR Compliance Workspace is een applicatie waarmee je als verpakkingsteam kunt bijhouden:</p>
+    <ul>
+        <li><strong>Wat</strong> zijn onze verpakkingen en waar bestaan ze uit?</li>
+        <li><strong>Wie</strong> zijn de leveranciers van de componenten?</li>
+        <li><strong>Welke</strong> PPWR-verplichtingen zijn van toepassing?</li>
+        <li><strong>Welke</strong> documenten en bewijsstukken hebben we?</li>
+        <li><strong>Wat</strong> ontbreekt er nog (gaps)?</li>
+        <li><strong>Wat</strong> is de huidige compliance status?</li>
+    </ul>
+    <div class="tip">
+        <strong>Tip:</strong> De applicatie bevat demo-data zodat je direct kunt zien hoe alles werkt. Gebruik de demo-data om vertrouwd te raken met de tool voordat je eigen data invoert.
+    </div>
+</div>
+
+<!-- 2. Inloggen -->
+<div class="section" id="inloggen">
+    <h2>2. Inloggen</h2>
+    <p>Open de applicatie in je browser op <strong>http://localhost:5000</strong> en log in met je gebruikersnaam en wachtwoord.</p>
+    <div class="screenshot">
+        <img src="screenshots/00_login.png" alt="Login scherm">
+        <div class="caption">Het inlogscherm van de PPWR Compliance Workspace</div>
+    </div>
+    <h3>Demo accounts</h3>
+    <table>
+        <tr><th>Gebruiker</th><th>Wachtwoord</th><th>Rol</th></tr>
+        <tr><td>admin</td><td>admin</td><td>Administrator</td></tr>
+        <tr><td>analyst</td><td>analyst</td><td>Gebruiker</td></tr>
+    </table>
+</div>
+
+<!-- 3. Dashboard -->
+<div class="section" id="dashboard">
+    <h2>3. Dashboard</h2>
+    <p>Na het inloggen kom je op het dashboard. Dit geeft een overzicht van de gehele verpakkingsportfolio en laat direct zien waar actie nodig is.</p>
+    <div class="screenshot">
+        <img src="screenshots/01_dashboard.png" alt="Dashboard">
+        <div class="caption">Het dashboard met KPI's, status-overzichten en recente activiteit</div>
+    </div>
+    <h3>Wat zie je op het dashboard?</h3>
+    <table>
+        <tr><th>KPI-kaart</th><th>Betekenis</th></tr>
+        <tr><td><span class="badge badge-blue">Total Packaging</span></td><td>Totaal aantal verpakkingsitems in het systeem</td></tr>
+        <tr><td><span class="badge badge-red">At Risk</span></td><td>Verpakkingen met kritieke gaps of ontbrekende compliance</td></tr>
+        <tr><td><span class="badge badge-orange">Missing Evidence</span></td><td>Verpakkingen waarvoor bewijsstukken ontbreken</td></tr>
+        <tr><td><span class="badge badge-blue">Open Gaps</span></td><td>Aantal openstaande tekortkomingen</td></tr>
+        <tr><td><span class="badge badge-green">Open Tasks</span></td><td>Aantal openstaande taken</td></tr>
+        <tr><td><span class="badge badge-orange">Expired Docs</span></td><td>Documenten waarvan de geldigheid is verlopen</td></tr>
+    </table>
+    <p>Daaronder vind je:</p>
+    <ul>
+        <li><strong>By Status:</strong> Verdeling van verpakkingen per compliance status</li>
+        <li><strong>By Packaging Type:</strong> Verdeling per verpakkingstype (sales, grouped, transport, e-commerce)</li>
+        <li><strong>Recent Gaps:</strong> De 5 meest recente tekortkomingen</li>
+        <li><strong>Recent Tasks:</strong> De 5 meest recente taken</li>
+    </ul>
+</div>
+
+<!-- 4. Packaging Register -->
+<div class="section" id="packaging">
+    <h2>4. Packaging Register</h2>
+    <p>Het Packaging Register is het hart van de applicatie. Hier beheer je alle verpakkingsitems.</p>
+    <div class="screenshot">
+        <img src="screenshots/02_packaging_list.png" alt="Packaging Register">
+        <div class="caption">Overzicht van alle verpakkingsitems met filters en zoekfunctie</div>
+    </div>
+    <h3>Functionaliteiten</h3>
+    <ul>
+        <li><strong>Zoeken:</strong> Zoek op naam of code via het zoekveld</li>
+        <li><strong>Filteren:</strong> Filter op status (Draft, Approved, At Risk, etc.) en/of verpakkingstype</li>
+        <li><strong>Nieuw item:</strong> Klik op <strong>"+ New Packaging"</strong> om een nieuw verpakkingsitem aan te maken</li>
+    </ul>
+    <h3>Een nieuw verpakkingsitem aanmaken</h3>
+    <div class="steps">
+        <ol>
+            <li>Klik op <strong>"+ New Packaging"</strong></li>
+            <li>Vul de verplichte velden in:
+                <ul>
+                    <li><strong>Code:</strong> Unieke code (bijv. PKG-009)</li>
+                    <li><strong>Naam:</strong> Beschrijvende naam</li>
+                    <li><strong>Type:</strong> Sales, Grouped, Transport, of E-commerce</li>
+                </ul>
+            </li>
+            <li>Vul optioneel in: SKU/productfamilie, markt, eigenaar, notities</li>
+            <li>Klik op <strong>"Create"</strong></li>
+        </ol>
+    </div>
+    <h3>Verpakkingsstatussen</h3>
+    <table>
+        <tr><th>Status</th><th>Betekenis</th></tr>
+        <tr><td><span class="badge badge-gray">Draft</span></td><td>Nieuw item, nog niet beoordeeld</td></tr>
+        <tr><td><span class="badge badge-blue">In Review</span></td><td>Wordt momenteel beoordeeld</td></tr>
+        <tr><td><span class="badge badge-orange">Missing Evidence</span></td><td>Bewijsstukken ontbreken</td></tr>
+        <tr><td><span class="badge badge-red">At Risk</span></td><td>Kritieke tekortkomingen gevonden</td></tr>
+        <tr><td><span class="badge badge-green">Approved</span></td><td>Alle requirements voldaan</td></tr>
+        <tr><td><span class="badge badge-gray">Archived</span></td><td>Niet meer actief</td></tr>
+    </table>
+</div>
+
+<!-- 5. Packaging Detail -->
+<div class="section" id="packaging-detail">
+    <h2>5. Packaging Detail</h2>
+    <p>Klik op een verpakkingscode om de detailpagina te openen. Dit is de centrale plek waar je alles over een verpakkingsitem ziet en beheert.</p>
+    <div class="screenshot">
+        <img src="screenshots/03_packaging_detail.png" alt="Packaging Detail">
+        <div class="caption">Detailpagina van een verpakkingsitem met alle gekoppelde informatie</div>
+    </div>
+    <h3>Tabs / Secties</h3>
+    <table>
+        <tr><th>Tab</th><th>Inhoud</th></tr>
+        <tr><td><strong>Components</strong></td><td>Onderdelen waaruit de verpakking bestaat (materiaal, gewicht, recycled content, food-contact, leverancier)</td></tr>
+        <tr><td><strong>Suppliers</strong></td><td>Leveranciers die gekoppeld zijn via de componenten</td></tr>
+        <tr><td><strong>Documents</strong></td><td>Documenten en bewijsstukken gekoppeld aan dit item</td></tr>
+        <tr><td><strong>Assessments</strong></td><td>Resultaten van de PPWR-beoordeling (welke requirements van toepassing zijn)</td></tr>
+        <tr><td><strong>Gaps</strong></td><td>Openstaande tekortkomingen</td></tr>
+        <tr><td><strong>Tasks</strong></td><td>Taken gerelateerd aan dit item</td></tr>
+        <tr><td><strong>Audit Log</strong></td><td>Geschiedenis van wijzigingen</td></tr>
+    </table>
+    <h3>Acties op de detailpagina</h3>
+    <ul>
+        <li><strong>Edit:</strong> Basisgegevens van het item wijzigen</li>
+        <li><strong>Run Assessment:</strong> Automatisch beoordelen welke PPWR-requirements van toepassing zijn en of het bewijs compleet is</li>
+        <li><strong>Generate Gaps:</strong> Automatisch tekortkomingen detecteren (ontbrekende data, documenten, leveranciers)</li>
+        <li><strong>View Dossier:</strong> Compleet compliance-dossier bekijken en exporteren</li>
+        <li><strong>Archive:</strong> Item archiveren als het niet meer actief is</li>
+        <li><strong>+ Add Component:</strong> Een nieuw component toevoegen</li>
+        <li><strong>+ Upload Document:</strong> Een document koppelen</li>
+    </ul>
+    <h3>Componenten beheren</h3>
+    <p>Elk verpakkingsitem bestaat uit een of meer componenten. Per component leg je vast:</p>
+    <ul>
+        <li><strong>Naam:</strong> Bijv. "Glazen fles 500ml", "Metalen dop", "Papieren label"</li>
+        <li><strong>Materiaal:</strong> Glas, plastic, karton, aluminium, papier, etc.</li>
+        <li><strong>Gewicht (gram):</strong> Gewicht van het component</li>
+        <li><strong>Recycled content %:</strong> Percentage gerecycled materiaal</li>
+        <li><strong>Food contact:</strong> Heeft dit component contact met voedsel?</li>
+        <li><strong>Leverancier:</strong> Welke leverancier levert dit component?</li>
+    </ul>
+    <div class="tip">
+        <strong>Tip:</strong> Voeg altijd een leverancier toe aan elk component. Dit is belangrijk voor het traceren van ontbrekende documenten en declaraties.
+    </div>
+</div>
+
+<!-- 6. Leveranciers -->
+<div class="section" id="suppliers">
+    <h2>6. Leveranciers</h2>
+    <p>Beheer hier alle leveranciers van verpakkingscomponenten.</p>
+    <div class="screenshot">
+        <img src="screenshots/04_supplier_list.png" alt="Leveranciers overzicht">
+        <div class="caption">Overzicht van alle leveranciers</div>
+    </div>
+    <div class="screenshot">
+        <img src="screenshots/05_supplier_detail.png" alt="Leverancier detail">
+        <div class="caption">Detailpagina van een leverancier met contacten, componenten en documenten</div>
+    </div>
+    <h3>Wat kun je doen?</h3>
+    <ul>
+        <li><strong>Leverancier aanmaken/bewerken:</strong> Naam, code, land, e-mail, telefoon, status</li>
+        <li><strong>Contactpersonen toevoegen:</strong> Per leverancier meerdere contacten met naam, e-mail, rol en telefoon</li>
+        <li><strong>Overzicht bekijken:</strong> Welke componenten levert deze leverancier? Welke documenten zijn er?</li>
+    </ul>
+    <h3>Leverancier-statussen</h3>
+    <table>
+        <tr><th>Status</th><th>Betekenis</th></tr>
+        <tr><td>Active</td><td>Gekwalificeerde, actieve leverancier</td></tr>
+        <tr><td>Pending</td><td>In afwachting van kwalificatie</td></tr>
+        <tr><td>Inactive</td><td>Niet meer actief</td></tr>
+        <tr><td>Blocked</td><td>Geblokkeerd</td></tr>
+    </table>
+</div>
+
+<!-- 7. Documenten -->
+<div class="section" id="documents">
+    <h2>7. Documenten</h2>
+    <p>Beheer alle documenten en bewijsstukken die nodig zijn voor PPWR-compliance.</p>
+    <div class="screenshot">
+        <img src="screenshots/06_documents.png" alt="Documenten overzicht">
+        <div class="caption">Overzicht van alle documenten met type, status en geldigheid</div>
+    </div>
+    <h3>Een document uploaden</h3>
+    <div class="steps">
+        <ol>
+            <li>Klik op <strong>"+ Upload Document"</strong></li>
+            <li>Vul de titel in en kies het documenttype</li>
+            <li>Koppel het document aan een verpakkingsitem, leverancier en/of component</li>
+            <li>Upload het bestand (optioneel)</li>
+            <li>Stel de geldigheidsperiode in (valid from / valid to)</li>
+            <li>Klik op <strong>"Upload"</strong></li>
+        </ol>
+    </div>
+    <h3>Documenttypes</h3>
+    <table>
+        <tr><th>Type</th><th>Wanneer nodig?</th></tr>
+        <tr><td>Specification Sheet</td><td>Technische specificaties van de verpakking</td></tr>
+        <tr><td>Material Declaration</td><td>Verklaring over gebruikte materialen</td></tr>
+        <tr><td>Food Contact Declaration</td><td>Bij food-contact componenten (EU Reg. 1935/2004)</td></tr>
+        <tr><td>Recycled Content Statement</td><td>Bewijs van percentage gerecycled materiaal</td></tr>
+        <tr><td>Certificate</td><td>Certificeringen (bijv. FSC, ISO)</td></tr>
+        <tr><td>Test Report</td><td>Testresultaten en analyses</td></tr>
+        <tr><td>Substance Statement</td><td>Verklaring over stoffen (SVHC, PFAS)</td></tr>
+        <tr><td>Supplier Declaration</td><td>Algemene leveranciersverklaring</td></tr>
+        <tr><td>Artwork / Label File</td><td>Artwork en labelbestanden</td></tr>
+    </table>
+    <h3>Documentstatussen</h3>
+    <table>
+        <tr><th>Status</th><th>Betekenis</th></tr>
+        <tr><td>Draft</td><td>Concept, nog niet definitief</td></tr>
+        <tr><td>Received</td><td>Ontvangen, nog niet goedgekeurd</td></tr>
+        <tr><td>Approved</td><td>Goedgekeurd en geldig</td></tr>
+        <tr><td>Expired</td><td>Geldigheid verlopen, moet vernieuwd worden</td></tr>
+    </table>
+    <div class="warning">
+        <strong>Let op:</strong> Verlopen documenten worden geteld op het dashboard. Zorg dat je documenten tijdig vernieuwt.
+    </div>
+</div>
+
+<!-- 8. Requirements -->
+<div class="section" id="requirements">
+    <h2>8. PPWR Requirements</h2>
+    <p>De requirements-bibliotheek bevat alle PPWR-verplichtingen die relevant zijn. Het systeem gebruikt deze om automatisch te bepalen welke verplichtingen op welke verpakking van toepassing zijn.</p>
+    <div class="screenshot">
+        <img src="screenshots/07_requirements.png" alt="Requirements overzicht">
+        <div class="caption">Overzicht van alle PPWR-requirements met categorie en ernst</div>
+    </div>
+    <div class="screenshot">
+        <img src="screenshots/08_requirement_detail.png" alt="Requirement detail">
+        <div class="caption">Detail van een requirement met toepasselijkheid en vereiste documenten</div>
+    </div>
+    <h3>Hoe werkt de toepasselijkheid?</h3>
+    <p>Elke requirement definieert wanneer hij van toepassing is:</p>
+    <ul>
+        <li><strong>Verpakkingstype:</strong> Bijv. alleen transport-verpakkingen of alleen e-commerce</li>
+        <li><strong>Materiaal:</strong> Bijv. alleen plastic componenten</li>
+        <li><strong>Food contact:</strong> Alleen als er food-contact componenten zijn</li>
+    </ul>
+    <p>Wanneer je <strong>"Run Assessment"</strong> uitvoert op een verpakkingsitem, controleert het systeem automatisch:</p>
+    <div class="steps">
+        <ol>
+            <li>Welke requirements zijn van toepassing op basis van type, materialen en food-contact?</li>
+            <li>Zijn de vereiste documenttypes aanwezig?</li>
+            <li>Zijn de vereiste datavelden ingevuld (bijv. recycled content percentage)?</li>
+            <li>Status wordt bepaald: <span class="badge badge-green">Compliant</span>, <span class="badge badge-orange">Partial</span>, of <span class="badge badge-red">Missing</span></li>
+        </ol>
+    </div>
+    <h3>Categorieeen</h3>
+    <table>
+        <tr><th>Categorie</th><th>Voorbeeld</th></tr>
+        <tr><td>Recycled Content</td><td>Minimale recycled content percentages voor plastic</td></tr>
+        <tr><td>Recyclability</td><td>Design for recycling verplichtingen</td></tr>
+        <tr><td>Minimisation</td><td>Minimalisering van gewicht en volume</td></tr>
+        <tr><td>Reuse</td><td>Hergebruikdoelen voor transport-verpakkingen</td></tr>
+        <tr><td>Food Contact</td><td>Food contact declarations</td></tr>
+        <tr><td>Labelling</td><td>Etiketteringsverplichtingen</td></tr>
+        <tr><td>Substance Restrictions</td><td>SVHC en PFAS beperkingen</td></tr>
+        <tr><td>Documentation</td><td>Leveranciersdeclaraties</td></tr>
+    </table>
+</div>
+
+<!-- 9. Gaps -->
+<div class="section" id="gaps">
+    <h2>9. Gaps (Tekortkomingen)</h2>
+    <p>Gaps zijn geidentificeerde tekortkomingen: ontbrekende data, documenten of leveranciersinformatie.</p>
+    <div class="screenshot">
+        <img src="screenshots/09_gaps.png" alt="Gaps overzicht">
+        <div class="caption">Overzicht van alle openstaande gaps met ernst, eigenaar en status</div>
+    </div>
+    <h3>Hoe ontstaan gaps?</h3>
+    <ul>
+        <li><strong>Automatisch:</strong> Klik op <strong>"Generate Gaps"</strong> bij een verpakkingsitem. Het systeem detecteert:
+            <ul>
+                <li>Componenten zonder leverancier</li>
+                <li>Ontbrekend gewicht of recycled content percentage</li>
+                <li>Ontbrekende documenten die door requirements vereist worden</li>
+            </ul>
+        </li>
+        <li><strong>Handmatig:</strong> Maak zelf een gap aan via <strong>"+ New Gap"</strong></li>
+    </ul>
+    <h3>Ernst-niveaus</h3>
+    <table>
+        <tr><th>Ernst</th><th>Betekenis</th></tr>
+        <tr><td><span class="badge badge-red">Critical</span></td><td>Moet onmiddellijk opgelost worden (bijv. ontbrekende food contact declaration)</td></tr>
+        <tr><td><span class="badge badge-orange">High</span></td><td>Hoge prioriteit, snel actie vereist</td></tr>
+        <tr><td><span class="badge" style="background:#fff3cd;color:#856404;">Medium</span></td><td>Moet opgelost worden voor compliance</td></tr>
+        <tr><td><span class="badge badge-green">Low</span></td><td>Wenselijk maar niet urgent</td></tr>
+    </table>
+    <h3>Van gap naar taak</h3>
+    <p>Klik op <strong>"Create Task"</strong> bij een gap om er automatisch een taak van te maken die je kunt toewijzen aan een collega.</p>
+</div>
+
+<!-- 10. Taken -->
+<div class="section" id="tasks">
+    <h2>10. Taken</h2>
+    <p>Taken zijn concrete acties die uitgevoerd moeten worden, vaak voortkomend uit gaps.</p>
+    <div class="screenshot">
+        <img src="screenshots/10_tasks.png" alt="Taken overzicht">
+        <div class="caption">Overzicht van alle taken met toewijzing, prioriteit en deadline</div>
+    </div>
+    <h3>Een taak aanmaken</h3>
+    <div class="steps">
+        <ol>
+            <li>Klik op <strong>"+ New Task"</strong> (of maak een taak vanuit een gap)</li>
+            <li>Vul de titel en beschrijving in</li>
+            <li>Wijs de taak toe aan iemand (<strong>Assigned To</strong>)</li>
+            <li>Stel een deadline in</li>
+            <li>Kies de prioriteit: Low, Medium, High, of Urgent</li>
+            <li>Koppel optioneel aan een verpakkingsitem of leverancier</li>
+        </ol>
+    </div>
+    <h3>Taakstatussen</h3>
+    <table>
+        <tr><th>Status</th><th>Betekenis</th></tr>
+        <tr><td>Todo</td><td>Nog niet gestart</td></tr>
+        <tr><td>In Progress</td><td>Mee bezig</td></tr>
+        <tr><td>Done</td><td>Afgerond</td></tr>
+        <tr><td>Cancelled</td><td>Geannuleerd</td></tr>
+    </table>
+</div>
+
+<!-- 11. Dossier -->
+<div class="section" id="dossier">
+    <h2>11. Packaging Dossier</h2>
+    <p>Het dossier is een compleet overzicht van alle compliance-informatie voor een verpakkingsitem. Dit kun je gebruiken voor interne audits of om aan te tonen dat je voldoet aan de PPWR.</p>
+    <div class="screenshot">
+        <img src="screenshots/11_dossier.png" alt="Packaging Dossier">
+        <div class="caption">Compleet compliance-dossier met alle gekoppelde informatie</div>
+    </div>
+    <h3>Wat staat in het dossier?</h3>
+    <ul>
+        <li>Algemene verpakkingsinformatie (code, naam, type, markt, eigenaar)</li>
+        <li>Componentenlijst met materialen, gewicht, recycled content en leveranciers</li>
+        <li>Overzicht van alle gekoppelde leveranciers</li>
+        <li>Lijst van alle documenten en bewijsstukken</li>
+        <li>Assessment-resultaten: welke requirements van toepassing zijn en of er aan voldaan wordt</li>
+        <li>Openstaande gaps</li>
+        <li>Openstaande taken</li>
+        <li>Audit trail</li>
+    </ul>
+    <h3>Exporteren</h3>
+    <p>Klik op <strong>"Export HTML (Back to Email)"</strong> om het dossier te downloaden als HTML-bestand. Dit kun je opslaan, printen of per e-mail delen.</p>
+    <div class="tip">
+        <strong>Tip:</strong> Exporteer regelmatig een dossier van je belangrijkste verpakkingen als bewijs van je compliance-inspanningen.
+    </div>
+</div>
+
+<!-- 12. Standaard Werkwijze -->
+<div class="section" id="workflow">
+    <h2>12. Standaard Werkwijze</h2>
+    <p>Volg deze stappen voor elk nieuw verpakkingsitem:</p>
+    <div class="steps">
+        <ol>
+            <li><strong>Registreer het verpakkingsitem</strong> in het Packaging Register met de juiste code, naam en type</li>
+            <li><strong>Voeg componenten toe</strong> met materiaal, gewicht, recycled content percentage en food-contact informatie</li>
+            <li><strong>Koppel leveranciers</strong> aan elk component</li>
+            <li><strong>Upload relevante documenten</strong> (specificaties, declaraties, certificaten)</li>
+            <li><strong>Voer een assessment uit</strong> via "Run Assessment" om te zien welke PPWR-requirements van toepassing zijn</li>
+            <li><strong>Genereer gaps</strong> via "Generate Gaps" om te ontdekken wat er nog ontbreekt</li>
+            <li><strong>Maak taken aan</strong> vanuit de gaps en wijs ze toe aan de juiste personen</li>
+            <li><strong>Los gaps op</strong> door ontbrekende data in te vullen en documenten te uploaden</li>
+            <li><strong>Herhaal het assessment</strong> totdat alle requirements voldaan zijn</li>
+            <li><strong>Exporteer het dossier</strong> als bewijs van compliance</li>
+        </ol>
+    </div>
+    <div class="warning">
+        <strong>Belangrijk:</strong> De PPWR-deadlines naderen. Begin met je meest kritieke verpakkingen (food-contact, plastic, hoge volumes) en werk van daaruit verder.
+    </div>
+</div>
+
+</div>
+
+<div class="footer">
+    PPWR Compliance Workspace &mdash; Gebruikershandleiding v1.0 &mdash; April 2026
+</div>
+
+</body>
+</html>
